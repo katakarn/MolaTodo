@@ -2,7 +2,7 @@ import UIKit
 
 class TodoListViewController: UIViewController, UITableViewDataSource, TodoItemViewControllerDelegate, UITableViewDelegate {
     
-    var indexSelectCell: Int?
+    var indexSelectCell: Int? = nil
     
     lazy var store: TodoStoreProtocal = {
         return TodoStore()
@@ -45,23 +45,24 @@ class TodoListViewController: UIViewController, UITableViewDataSource, TodoItemV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "updateSegue", sender: self)
-        print("row selected : \(indexPath.row)")
+        indexSelectCell = indexPath.row
+        performSegue(withIdentifier: "updateSegue", sender: nil)
+//        print("row selected : \(indexPath.row)")
     }
     
     
     
-    @IBAction func addButtonTapped(_ sender: Any) {
-        let newItem = Todo(
-            id: UUID().uuidString,
-            details: "Test \(todoList.count + 1)",
-            type: .todoList,
-            dueDate: Date(),
-            isDone: false
-        )
-        todoList.append(newItem)
-        tableView.reloadData()
-    }
+//    @IBAction func addButtonTapped(_ sender: Any) {
+//        let newItem = Todo(
+//            id: UUID().uuidString,
+//            details: "Test \(todoList.count + 1)",
+//            type: .todoList,
+//            dueDate: Date(),
+//            isDone: false
+//        )
+//        todoList.append(newItem)
+//        tableView.reloadData()
+//    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -76,9 +77,14 @@ class TodoListViewController: UIViewController, UITableViewDataSource, TodoItemV
     }
     
     func onUpdated(todoItem: Todo) {
-        todoList.append(todoItem)
         
-        
+        if !store.isAlreadyInList(id: todoItem.id){
+            todoList.append(todoItem)
+        }else{
+            if let index = indexSelectCell {
+                todoList[index] = todoItem
+            }
+        }
         
     }
     

@@ -10,6 +10,7 @@ import Foundation
 protocol TodoStoreProtocal {
     func getTodoList() -> [Todo]
     func save(todoList: [Todo])
+    func isAlreadyInList(id: String) -> Bool
 }
 
 class TodoStore: TodoStoreProtocal{
@@ -21,5 +22,14 @@ class TodoStore: TodoStoreProtocal{
     
     func save(todoList: [Todo]) {
         self.todoList = todoList
+    }
+    
+    func isAlreadyInList(id: String) -> Bool{
+        for item in todoList{
+            if item.id == id {
+                return true
+            }
+        }
+        return false
     }
 }
